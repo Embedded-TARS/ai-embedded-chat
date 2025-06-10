@@ -48,6 +48,7 @@ def speak(text):
     engine.runAndWait()
 
 def chat_with_ollama(message, model="smollm2"):
+# def chat_with_ollama(message, model="phi4-mini"):
     print("🤖 AI: ", end='', flush=True)
     full_response = []
     stream = ollama.chat(
