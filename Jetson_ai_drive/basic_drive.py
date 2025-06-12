@@ -2,6 +2,7 @@
 """
 Simple terminal controller for TARS rover
 Controls: WASD for movement, Space for stop, Q to quit
+Enhanced with backward steering capabilities
 """
 
 import sys
@@ -27,6 +28,10 @@ class SimpleRoverController:
         self._input_char = None
         self._stop_event = threading.Event()
         
+        # Track current movement state
+        self.moving_forward = False
+        self.moving_backward = False
+        
     def _read_input(self):
         """Read keyboard input in raw mode"""
         fd = sys.stdin.fileno()
@@ -49,34 +54,60 @@ class SimpleRoverController:
             if ch == 'w':  # Forward
                 self.linear_speed = self.MAX_SPEED
                 self.angular_speed = 0.0
+                self.moving_forward = True
+                self.moving_backward = False
             elif ch == 's':  # Backward
                 self.linear_speed = -self.MAX_SPEED
                 self.angular_speed = 0.0
-            elif ch == 'a':  # Turn left - needs power to turn
-                self.angular_speed = -self.MAX_STEER
-                self.linear_speed = 0.5  # Add forward speed for turning power
-            elif ch == 'd':  # Turn right - needs power to turn
+                self.moving_forward = False
+                self.moving_backward = True
+            elif ch == 'a':  # Turn left
                 self.angular_speed = self.MAX_STEER
-                self.linear_speed = 0.5  # Add forward speed for turning power
+                if self.moving_backward:
+                    # Keep backward motion with steering
+                    self.linear_speed = -0.5
+                else:
+                    # Default forward motion for steering power
+                    self.linear_speed = 0.5
+                    self.moving_forward = True
+            elif ch == 'd':  # Turn right
+                self.angular_speed = -self.MAX_STEER
+                if self.moving_backward:
+                    # Keep backward motion with steering
+                    self.linear_speed = -0.5
+                else:
+                    # Default forward motion for steering power
+                    self.linear_speed = 0.5
+                    self.moving_forward = True
             elif ch == ' ':  # Stop
                 self.linear_speed = 0.0
                 self.angular_speed = 0.0
+                self.moving_forward = False
+                self.moving_backward = False
             elif ch == 'q' or ch == '\x1b':  # Quit (q or ESC)
                 self.running = False
                 
-            # Combined movements
+            # Combined movements (keeping original functionality)
             elif ch == 'e':  # Forward + Right
-                self.linear_speed = 0.5  # Boost speed for turning
+                self.linear_speed = 0.5
                 self.angular_speed = self.MAX_STEER
+                self.moving_forward = True
+                self.moving_backward = False
             elif ch == 'r':  # Forward + Left
-                self.linear_speed = 0.5  # Boost speed for turning
+                self.linear_speed = 0.5
                 self.angular_speed = -self.MAX_STEER
+                self.moving_forward = True
+                self.moving_backward = False
             elif ch == 'z':  # Backward + Left
-                self.linear_speed = -0.5  # Boost speed for turning
+                self.linear_speed = -0.5
                 self.angular_speed = -self.MAX_STEER
+                self.moving_forward = False
+                self.moving_backward = True
             elif ch == 'x':  # Backward + Right
-                self.linear_speed = -0.5  # Boost speed for turning
+                self.linear_speed = -0.5
                 self.angular_speed = self.MAX_STEER
+                self.moving_forward = False
+                self.moving_backward = True
     
     def update_robot(self):
         """Send velocity commands to robot"""
@@ -98,19 +129,28 @@ class SimpleRoverController:
         elif self.angular_speed < 0:
             status += " + Left turn"
             
+        # Show current movement state
+        if self.moving_forward:
+            status += " [FWD mode]"
+        elif self.moving_backward:
+            status += " [BWD mode]"
+            
         print(status + "  ", end='', flush=True)
     
     def run(self):
         """Main control loop"""
-        print("=== Simple Rover Controller ===")
+        print("=== Enhanced Rover Controller ===")
         print("Controls:")
-        print("  W/S: Forward/Backward")
-        print("  A/D: Turn Left/Right")
+        print("  W/S: Forward/Backward (sets movement mode)")
+        print("  A/D: Turn Left/Right (adapts to current mode)")
         print("  E/R: Forward+Right/Left")
         print("  Z/X: Backward+Left/Right")
         print("  Space: Stop")
         print("  Q/ESC: Quit")
-        print("==============================\n")
+        print("\nNow supports steering during backward movement!")
+        print("- Press S to enter backward mode")
+        print("- Then use A/D to steer while moving backward")
+        print("==================================\n")
         
         # Start input thread
         input_thread = threading.Thread(target=self._read_input)
