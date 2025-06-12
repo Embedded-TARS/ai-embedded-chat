@@ -32,7 +32,7 @@ class TARSRover:
         
         # Rover setup
         try:
-            self.base = BaseController('/dev/ttyUSB1', 115200)
+            self.base = BaseController('/dev/ttyUSB0', 115200)
             self.rover_connected = True
             print("✅ TARS rover connected!")
         except Exception as e:
