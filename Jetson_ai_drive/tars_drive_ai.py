@@ -139,52 +139,115 @@ class TARSRover:
         def movement_worker():
             try:
                 if movement_pattern == "happy_wiggle":
-                    # Forward-back-forward
+                    # Forward-back-forward (longer, more expressive)
+                    self.base.base_velocity_ctrl(0.25, 0)
+                    time.sleep(0.5)
+                    self.base.base_velocity_ctrl(-0.25, 0)
+                    time.sleep(0.5)
+                    self.base.base_velocity_ctrl(0.25, 0)
+                    time.sleep(0.5)
+                    self.base.base_velocity_ctrl(0, 0)
+                    time.sleep(0.2)
+                    # Extra wiggle
+                    self.base.base_velocity_ctrl(0.15, 0)
+                    time.sleep(0.3)
+                    
+                elif movement_pattern == "excited_spin":
+                    # More dramatic spinning pattern
+                    for _ in range(3):
+                        self.base.base_velocity_ctrl(0.5, -0.4)
+                        time.sleep(0.3)
+                        self.base.base_velocity_ctrl(0.5, 0.4)
+                        time.sleep(0.3)
+                    # Final spin
+                    self.base.base_velocity_ctrl(0.5, -0.5)
+                    time.sleep(0.4)
+                        
+                elif movement_pattern == "thinking_turn":
+                    # Contemplative slow turns
+                    self.base.base_velocity_ctrl(0.5, -0.15)
+                    time.sleep(0.6)
+                    self.base.base_velocity_ctrl(0, 0)
+                    time.sleep(0.3)
+                    self.base.base_velocity_ctrl(0.5, 0.15)
+                    time.sleep(0.6)
+                    self.base.base_velocity_ctrl(0, 0)
+                    time.sleep(0.3)
+                    self.base.base_velocity_ctrl(0.5, -0.15)
+                    time.sleep(0.6)
+                    
+                elif movement_pattern == "sad_backup":
+                    # Slow, dejected backward movement
+                    self.base.base_velocity_ctrl(-0.1, 0)
+                    time.sleep(0.8)
+                    self.base.base_velocity_ctrl(0, 0)
+                    time.sleep(0.4)
+                    self.base.base_velocity_ctrl(-0.05, 0)
+                    time.sleep(0.6)
+                    
+                elif movement_pattern == "angry_turn":
+                    # Sharp aggressive movements
+                    self.base.base_velocity_ctrl(0.5, -0.5)
+                    time.sleep(0.3)
+                    self.base.base_velocity_ctrl(0.5, 0.5)
+                    time.sleep(0.3)
+                    self.base.base_velocity_ctrl(0.5, -0.5)
+                    time.sleep(0.4)
+                    
+                elif movement_pattern == "tired_rock":
+                    # Slow, lazy rocking motion
+                    self.base.base_velocity_ctrl(0.08, 0)
+                    time.sleep(0.8)
+                    self.base.base_velocity_ctrl(-0.08, 0)
+                    time.sleep(0.8)
+                    self.base.base_velocity_ctrl(0.05, 0)
+                    time.sleep(0.6)
+                    self.base.base_velocity_ctrl(-0.05, 0)
+                    time.sleep(0.6)
+                    
+                elif movement_pattern == "curious_lean":
+                    # Inquisitive forward lean
+                    self.base.base_velocity_ctrl(0.2, 0)
+                    time.sleep(0.4)
+                    self.base.base_velocity_ctrl(0, 0)
+                    time.sleep(0.3)
+                    self.base.base_velocity_ctrl(0.1, 0)
+                    time.sleep(0.3)
+                    
+                elif movement_pattern == "confused_sway":
+                    # Side-to-side confusion
+                    self.base.base_velocity_ctrl(0.5, -0.2)
+                    time.sleep(0.4)
+                    self.base.base_velocity_ctrl(0.5, 0.2)
+                    time.sleep(0.4)
+                    self.base.base_velocity_ctrl(0.5, -0.2)
+                    time.sleep(0.4)
+                    self.base.base_velocity_ctrl(0.5, 0.2)
+                    time.sleep(0.4)
+                    
+                elif movement_pattern == "nervous_jitter":
+                    # Quick nervous movements
+                    for _ in range(4):
+                        self.base.base_velocity_ctrl(0.1, 0)
+                        time.sleep(0.2)
+                        self.base.base_velocity_ctrl(-0.1, 0)
+                        time.sleep(0.2)
+                        
+                elif movement_pattern == "playful_circle":
+                    # Circular movement
+                    self.base.base_velocity_ctrl(0.5, -0.3)
+                    time.sleep(1.2)
+                    
+                elif movement_pattern == "dance_wiggle":
+                    # Dance-like movement
+                    self.base.base_velocity_ctrl(0.5, -0.4)
+                    time.sleep(0.3)
+                    self.base.base_velocity_ctrl(0.5, 0.4)
+                    time.sleep(0.3)
                     self.base.base_velocity_ctrl(0.2, 0)
                     time.sleep(0.3)
                     self.base.base_velocity_ctrl(-0.2, 0)
                     time.sleep(0.3)
-                    self.base.base_velocity_ctrl(0.2, 0)
-                    time.sleep(0.3)
-                    
-                elif movement_pattern == "excited_spin":
-                    # Left-right-left-right
-                    for _ in range(2):
-                        self.base.base_velocity_ctrl(0, -0.3)
-                        time.sleep(0.2)
-                        self.base.base_velocity_ctrl(0, 0.3)
-                        time.sleep(0.2)
-                        
-                elif movement_pattern == "thinking_turn":
-                    # Slow left-right-left
-                    self.base.base_velocity_ctrl(0, -0.2)
-                    time.sleep(0.4)
-                    self.base.base_velocity_ctrl(0, 0.2)
-                    time.sleep(0.4)
-                    self.base.base_velocity_ctrl(0, -0.2)
-                    time.sleep(0.4)
-                    
-                elif movement_pattern == "sad_backup":
-                    # Slow backward
-                    self.base.base_velocity_ctrl(-0.15, 0)
-                    time.sleep(0.8)
-                    
-                elif movement_pattern == "angry_turn":
-                    # Sharp left or right
-                    self.base.base_velocity_ctrl(0, -0.4)
-                    time.sleep(0.3)
-                    
-                elif movement_pattern == "tired_rock":
-                    # Slow forward-back
-                    self.base.base_velocity_ctrl(0.1, 0)
-                    time.sleep(0.5)
-                    self.base.base_velocity_ctrl(-0.1, 0)
-                    time.sleep(0.5)
-                    
-                elif movement_pattern == "curious_lean":
-                    # Small forward
-                    self.base.base_velocity_ctrl(0.15, 0)
-                    time.sleep(0.4)
                     
                 # Always stop after movement
                 self.base.base_velocity_ctrl(0, 0)
@@ -251,6 +314,15 @@ class TARSRover:
         except Exception as e:
             print(f"Movement error: {e}")
             
+    def get_random_movement(self):
+        """Get a random movement pattern for general conversation"""
+        import random
+        movements = [
+            "happy_wiggle", "excited_spin", "thinking_turn", "curious_lean", 
+            "confused_sway", "nervous_jitter", "playful_circle", "dance_wiggle"
+        ]
+        return random.choice(movements)
+        
     def chat_with_tars(self, message):
         """Send message to TARS AI and get response with movement"""
         print("🤖 TARS: ", end='', flush=True)
@@ -284,28 +356,43 @@ class TARSRover:
             print()  # New line
             response = ''.join(response_parts)
             
+            # Always do movement before speaking
+            print("🎭 TARS expressing through movement...")
+            
             # Execute movements based on commands or emotional responses
             if movement_cmd == 'emotion_check':
                 # TARS expressing emotion through movement
-                if any(word in response.lower() for word in ['happy', 'great', 'fantastic']):
+                if any(word in response.lower() for word in ['happy', 'great', 'fantastic', 'good']):
                     self.execute_movement('happy_wiggle')
-                elif any(word in response.lower() for word in ['excited', 'thrilled']):
+                elif any(word in response.lower() for word in ['excited', 'thrilled', 'pumped']):
                     self.execute_movement('excited_spin')
-                elif 'confused' in response.lower():
-                    self.execute_movement('thinking_turn')
-                elif any(word in response.lower() for word in ['sad', 'down']):
+                elif any(word in response.lower() for word in ['confused', 'puzzled', 'unsure']):
+                    self.execute_movement('confused_sway')
+                elif any(word in response.lower() for word in ['sad', 'down', 'low']):
                     self.execute_movement('sad_backup')
-                elif 'angry' in response.lower():
+                elif any(word in response.lower() for word in ['angry', 'frustrated', 'mad']):
                     self.execute_movement('angry_turn')
-                elif 'tired' in response.lower():
+                elif any(word in response.lower() for word in ['tired', 'sluggish', 'sleepy']):
                     self.execute_movement('tired_rock')
+                elif any(word in response.lower() for word in ['nervous', 'anxious', 'worried']):
+                    self.execute_movement('nervous_jitter')
                 else:
                     self.execute_movement('curious_lean')
                     
             elif movement_cmd in ['forward', 'backward', 'left', 'right', 'stop']:
                 # Execute direct movement command
+                print(f"🎮 Executing movement: {movement_cmd}")
                 threading.Thread(target=self.execute_direct_movement, args=(movement_cmd,), daemon=True).start()
                 
+            else:
+                # Random movement for general conversation
+                random_movement = self.get_random_movement()
+                self.execute_movement(random_movement)
+            
+            # Wait for movement to complete before speaking
+            if self.movement_thread:
+                self.movement_thread.join(timeout=5)  # Wait up to 5 seconds
+            
             # Speak the response
             if response.strip():
                 self.speak(response)
